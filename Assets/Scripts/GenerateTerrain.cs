@@ -38,16 +38,22 @@ public class GenerateTerrain : MonoBehaviour
     private LineRenderer curLR;
     private EdgeCollider2D curEC;
 
+    public InputActionReference recordCurveAction;  
+    public InputActionReference sumCurvesAction;    
+    public InputActionReference clearCurvesAction;
 
-    Vector2[] SumYCurves(Vector2[] a, Vector2[] b)
+    private void OnEnable()
     {
-        int n = Mathf.Min(a.Length, b.Length);
-        Vector2[] r = new Vector2[n];
+        if (recordCurveAction != null) recordCurveAction.action.Enable();
+        if (sumCurvesAction != null) sumCurvesAction.action.Enable();
+        if (clearCurvesAction != null) clearCurvesAction.action.Enable();
+    }
 
-        for (int i = 0; i < n; i++)
-            r[i] = new Vector2(a[i].x, a[i].y + b[i].y);
-
-        return r;
+    private void OnDisable()
+    {
+        if (recordCurveAction != null) recordCurveAction.action.Disable();
+        if (sumCurvesAction != null) sumCurvesAction.action.Disable();
+        if (clearCurvesAction != null) clearCurvesAction.action.Disable();
     }
 
     void SumAllCurves()
@@ -87,14 +93,24 @@ public class GenerateTerrain : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        
+        if (recordCurveAction != null &&
+            recordCurveAction.action.WasPressedThisFrame())
+        {
             ToggleRecording();
+        }
 
-        if (Keyboard.current.rKey.wasPressedThisFrame)
+        if (clearCurvesAction != null &&
+            clearCurvesAction.action.WasPressedThisFrame())
+        {
             ClearAllCurves();
+        }
 
-        if (Keyboard.current.sKey.wasPressedThisFrame)
-            SumAllCurves();      
+        if (sumCurvesAction != null &&
+            sumCurvesAction.action.WasPressedThisFrame())
+        {
+            SumAllCurves();
+        }
     }
 
     void FixedUpdate()
@@ -114,6 +130,10 @@ public class GenerateTerrain : MonoBehaviour
             AddSample(cursor.position);
 
         fixedFrameCount++;
+        if (loop != currentLoop)
+        {
+            SumAllCurves();
+        }
     }
 
     // ----------------------------------------------------------

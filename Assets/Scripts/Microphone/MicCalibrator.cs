@@ -1,5 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UIElements;
 
 public class MicCalibration : MonoBehaviour
 {
@@ -12,13 +15,37 @@ public class MicCalibration : MonoBehaviour
     public float maxFrequency = 1000f;
     public static float loudness = 0f;
     public static float frequency = 0f;
-
+    public UIDocument uiDocument;
+    public Label calLabel;
     public bool calibrationComplete = false;
+    public InputActionReference jumpAction;
+
+    private void OnEnable()
+    {
+        if (jumpAction != null) jumpAction.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        if (jumpAction != null) jumpAction.action.Disable();
+    }
 
     const string KEY_MIN_LOUDNESS = "cal_minLoudness";
     const string KEY_MAX_LOUDNESS = "cal_maxLoudness";
     const string KEY_MIN_FREQ = "cal_minFreq";
     const string KEY_MAX_FREQ = "cal_maxFreq";
+
+    void Awake()
+    {
+        // Get the root VisualElement from this UIDocument
+        var root = uiDocument.rootVisualElement;
+
+        // Find the Label whose name (or UXML id) is "FPSCounter"
+        calLabel = root.Q<Label>("Calibration");
+
+        if (calLabel == null)
+            Debug.LogWarning("Label 'Score' not found in UIDocument.");
+    }
 
     void Update()
     {
@@ -45,23 +72,42 @@ public class MicCalibration : MonoBehaviour
 
     public IEnumerator RunCalibration()
     {
-        yield return new WaitForSeconds(5f); // Allow mic to initialize
+        // Make sure the Jump action is enabled
+        if (!jumpAction.action.enabled) jumpAction.action.Enable();
+        calLabel.style.display = DisplayStyle.Flex;
 
-        Debug.Log("Be as quiet as possible...");
+        // Fetch a human-readable key / button name from the first binding
+        string jumpKey = jumpAction.action.GetBindingDisplayString();
+
+        // 1) Prompt the user and wait for Jump
+        calLabel.text = $"Press {jumpKey} to start calibration";
+        yield return new WaitUntil(() => jumpAction.action.triggered);
+
+
+        // 3) Quiet sample
+        calLabel.text = "Be as quiet as possible…";
+        yield return new WaitForSeconds(1f);
         yield return SampleLoudness(3f, quiet: true);
 
-        Debug.Log("Now be loud!");
+        // 4) Loud sample
+        calLabel.text = "Be loud!";
         yield return SampleLoudness(3f, quiet: false);
 
-        Debug.Log("Sing your lowest pitch...");
-        yield return SampleFrequency(3f, low: true);
+        //// 5) Low pitch
+        //calLabel.text = "Sing your lowest pitch…";
+        //yield return SampleFrequency(0.1f, low: true);
 
-        Debug.Log("Sing your highest pitch...");
-        yield return SampleFrequency(3f, low: false);
+        //// 6) High pitch
+        //calLabel.text = "Sing your highest pitch…";
+        //yield return SampleFrequency(0.1f, low: false);
 
+        // 7) Finish up
         SaveCalibrationToPrefs();
         calibrationComplete = true;
-        Debug.Log("Calibration complete and saved!");
+        calLabel.text = "Calibration complete!";
+        yield return new WaitForSeconds(2f);
+
+        calLabel.style.display = DisplayStyle.None;
     }
 
     private IEnumerator SampleLoudness(float duration, bool quiet)
@@ -82,23 +128,23 @@ public class MicCalibration : MonoBehaviour
         else maxLoudness = val;
     }
 
-    private IEnumerator SampleFrequency(float duration, bool low)
-    {
-        float t = 0f;
-        float val = low ? float.MaxValue : float.MinValue;
+    //private IEnumerator SampleFrequency(float duration, bool low)
+    //{
+    //    float t = 0f;
+    //    float val = low ? float.MaxValue : float.MinValue;
 
-        while (t < duration)
-        {
-            float freq = mic.frequency;
-            if (low) val = Mathf.Min(val, freq);
-            else val = Mathf.Max(val, freq);
-            t += Time.deltaTime;
-            yield return null;
-        }
+    //    while (t < duration)
+    //    {
+    //        float freq = mic.frequency;
+    //        if (low) val = Mathf.Min(val, freq);
+    //        else val = Mathf.Max(val, freq);
+    //        t += Time.deltaTime;
+    //        yield return null;
+    //    }
 
-        if (low) minFrequency = val;
-        else maxFrequency = val;
-    }
+    //    if (low) minFrequency = val;
+    //    else maxFrequency = val;
+    //}
 
     public float GetNormalizedLoudness()
     {

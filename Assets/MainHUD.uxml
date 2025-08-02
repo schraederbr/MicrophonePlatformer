@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/MainHUD.uss?fileID=7433441132597879392&amp;guid=087fce548742d8144abf3ce7ccd18777&amp;type=3#MainHUD" />
+    <ui:Label text="FPSCounter" name="FPSCounter" />
+    <ui:Label text="Score" name="Score" />
+    <ui:Label text="Calibration" name="Calibration" enabled="true" style="font-size: 16px; display: none;" />
+</ui:UXML>

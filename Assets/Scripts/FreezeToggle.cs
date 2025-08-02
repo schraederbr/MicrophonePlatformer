@@ -3,34 +3,48 @@ using UnityEngine.InputSystem;
 
 public class FreezeToggle : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public InputActionReference freezeAction;
+    public bool freezeRotation = true;   // if true, keep rotation frozen when "unfrozen"
+
+    private void OnEnable()
     {
-        
+        if (freezeAction != null) freezeAction.action.Enable();
     }
 
-    // Update is called once per frame
+    private void OnDisable()
+    {
+        if (freezeAction != null) freezeAction.action.Disable();
+    }
+
     void Update()
     {
-        if (Keyboard.current.dKey.wasPressedThisFrame)
+        if (freezeAction != null &&
+            freezeAction.action.WasPressedThisFrame())
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            // true if *all* three FreezeAll bits are present
-            bool isFrozen =
-                (rb.constraints & RigidbodyConstraints2D.FreezeAll) == RigidbodyConstraints2D.FreezeAll;
 
-            // switch between fully frozen and fully free
-            rb.constraints = isFrozen
-                ? RigidbodyConstraints2D.None
-                : RigidbodyConstraints2D.FreezeAll;
+            // Are we currently *fully* frozen?
+            bool fullyFrozen =
+                (rb.constraints & RigidbodyConstraints2D.FreezeAll) ==
+                RigidbodyConstraints2D.FreezeAll;
 
-            // if the body was asleep while frozen, wake it so physics resumes
+            if (fullyFrozen)
+            {
+                // Unfreeze: keep or drop rotation based on the flag
+                rb.constraints = freezeRotation
+                    ? RigidbodyConstraints2D.FreezeRotation
+                    : RigidbodyConstraints2D.None;
+            }
+            else
+            {
+                // Freeze everything
+                rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            }
+
+            // Wake the body so physics resumes if it was asleep
             rb.WakeUp();
-
-
-
         }
-
     }
+
 
 }
