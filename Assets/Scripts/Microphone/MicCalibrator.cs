@@ -19,6 +19,10 @@ public class MicCalibration : MonoBehaviour
     public Label calLabel;
     public bool calibrationComplete = false;
     public InputActionReference jumpAction;
+    public GameObject cover;
+    public InputActionReference calibrateAction;
+    public Label calibrateInfoLabel;
+    public UIDocument uiDoc;
 
     private void OnEnable()
     {
@@ -55,10 +59,22 @@ public class MicCalibration : MonoBehaviour
             frequency = GetNormalizedFrequency();
             //Debug.Log($"Loudness: {loudness:F1} | Frequency: {frequency:F1}");
         }
+        if (calibrateAction.action.triggered)
+        {
+            StartCoroutine(RunCalibration());
+        }
     }
 
     void Start()
     {
+        calibrateInfoLabel = uiDoc.rootVisualElement.Q<Label>("CalibrateInfo");
+        var b = calibrateAction.action.bindings[0];
+        string calKeyName = InputControlPath.ToHumanReadableString(
+            b.effectivePath,
+            InputControlPath.HumanReadableStringOptions.OmitDevice);
+        calibrateInfoLabel.text = "Press " + calKeyName + " to calibrate";
+        
+
         if (LoadCalibrationFromPrefs())
         {
             Debug.Log("Calibration loaded from PlayerPrefs");
@@ -72,6 +88,7 @@ public class MicCalibration : MonoBehaviour
 
     public IEnumerator RunCalibration()
     {
+        cover.SetActive(true);
         // Make sure the Jump action is enabled
         if (!jumpAction.action.enabled) jumpAction.action.Enable();
         calLabel.style.display = DisplayStyle.Flex;
@@ -108,6 +125,8 @@ public class MicCalibration : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         calLabel.style.display = DisplayStyle.None;
+        cover.SetActive(false);
+        Globals.time = 0f;
     }
 
     private IEnumerator SampleLoudness(float duration, bool quiet)

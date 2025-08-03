@@ -152,11 +152,12 @@ namespace TarodevController
 
             Bounds b = _col.bounds;
             float rayLen = _stats.GrounderDistance + 0.02f;
-            Vector2[] rayStarts = {
-        new Vector2(b.min.x + 0.05f, b.min.y),   // left foot
-        new Vector2(b.center.x,       b.min.y),  // centre
-        new Vector2(b.max.x - 0.05f, b.min.y)    // right foot
-    };
+            Vector2[] rayStarts =
+            {
+                new Vector2(b.min.x,   b.min.y), // left foot  – bottom-left corner
+                new Vector2(b.center.x,b.min.y), // centre
+                new Vector2(b.max.x,   b.min.y)  // right foot – bottom-right corner
+            };
 
             foreach (Vector2 start in rayStarts)
             {

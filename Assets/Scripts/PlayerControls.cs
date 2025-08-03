@@ -144,6 +144,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ResetScene"",
+                    ""type"": ""Button"",
+                    ""id"": ""02f28e14-b721-4f97-ab25-1f7f133b71b0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Calibrate"",
+                    ""type"": ""Button"",
+                    ""id"": ""8ea50e81-ec25-4723-985c-45e555775762"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -256,6 +274,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""ClearCurves"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e1865cb7-3cd5-47f0-b495-30d5eaa4a7cd"",
+                    ""path"": ""<Keyboard>/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResetScene"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f7bc0cbb-8560-499c-a501-040e51d2d726"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Calibrate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -270,6 +310,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_FreezePlayer = m_Gameplay.FindAction("FreezePlayer", throwIfNotFound: true);
         m_Gameplay_SumCurves = m_Gameplay.FindAction("SumCurves", throwIfNotFound: true);
         m_Gameplay_ClearCurves = m_Gameplay.FindAction("ClearCurves", throwIfNotFound: true);
+        m_Gameplay_ResetScene = m_Gameplay.FindAction("ResetScene", throwIfNotFound: true);
+        m_Gameplay_Calibrate = m_Gameplay.FindAction("Calibrate", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -356,6 +398,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_FreezePlayer;
     private readonly InputAction m_Gameplay_SumCurves;
     private readonly InputAction m_Gameplay_ClearCurves;
+    private readonly InputAction m_Gameplay_ResetScene;
+    private readonly InputAction m_Gameplay_Calibrate;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -391,6 +435,14 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/ClearCurves".
         /// </summary>
         public InputAction @ClearCurves => m_Wrapper.m_Gameplay_ClearCurves;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/ResetScene".
+        /// </summary>
+        public InputAction @ResetScene => m_Wrapper.m_Gameplay_ResetScene;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Calibrate".
+        /// </summary>
+        public InputAction @Calibrate => m_Wrapper.m_Gameplay_Calibrate;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -435,6 +487,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ClearCurves.started += instance.OnClearCurves;
             @ClearCurves.performed += instance.OnClearCurves;
             @ClearCurves.canceled += instance.OnClearCurves;
+            @ResetScene.started += instance.OnResetScene;
+            @ResetScene.performed += instance.OnResetScene;
+            @ResetScene.canceled += instance.OnResetScene;
+            @Calibrate.started += instance.OnCalibrate;
+            @Calibrate.performed += instance.OnCalibrate;
+            @Calibrate.canceled += instance.OnCalibrate;
         }
 
         /// <summary>
@@ -464,6 +522,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ClearCurves.started -= instance.OnClearCurves;
             @ClearCurves.performed -= instance.OnClearCurves;
             @ClearCurves.canceled -= instance.OnClearCurves;
+            @ResetScene.started -= instance.OnResetScene;
+            @ResetScene.performed -= instance.OnResetScene;
+            @ResetScene.canceled -= instance.OnResetScene;
+            @Calibrate.started -= instance.OnCalibrate;
+            @Calibrate.performed -= instance.OnCalibrate;
+            @Calibrate.canceled -= instance.OnCalibrate;
         }
 
         /// <summary>
@@ -546,5 +610,19 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnClearCurves(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ResetScene" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnResetScene(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Calibrate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCalibrate(InputAction.CallbackContext context);
     }
 }

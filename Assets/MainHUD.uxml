@@ -1,6 +1,22 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/MainHUD.uss?fileID=7433441132597879392&amp;guid=087fce548742d8144abf3ce7ccd18777&amp;type=3#MainHUD" />
-    <ui:Label text="FPSCounter" name="FPSCounter" />
-    <ui:Label text="Score" name="Score" />
-    <ui:Label text="Calibration" name="Calibration" enabled="true" style="font-size: 16px; display: none;" />
+    <ui:VisualElement name="TopRow" style="flex-grow: 0; flex-direction: row; justify-content: space-between; align-items: center;">
+        <ui:Label text="Score" name="Score" style="width: 136px;" />
+        <ui:Label text="Time" name="Time" style="width: 136px;" />
+        <ui:Label text="FPSCounter" name="FPSCounter" style="flex-direction: row;" />
+    </ui:VisualElement>
+    <ui:Label text="Calibration" name="Calibration" enabled="true" style="font-size: 24px; display: none;" />
+    <ui:VisualElement name="GameOver" enabled="true" style="flex-grow: 1; justify-content: center; display: none; flex-wrap: wrap;">
+        <ui:Label text="GameOver" name="GameOver" style="white-space: normal; -unity-text-align: upper-left; font-size: 30px; flex-wrap: wrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="Controls" style="flex-grow: 1; position: absolute; bottom: 0; width: 100%;">
+        <ui:Toggle label="Show Controls" name="ToggleControls" style="bottom: 0%;" />
+        <ui:VisualElement name="ControlInfo" style="flex-grow: 0; justify-content: flex-end; align-self: auto; flex-direction: column; flex-shrink: 0; bottom: 0%; position: relative; width: 100%;">
+            <ui:Label text="WASD to move and Space to Jump" name="KeyBindings" />
+            <ui:Label text="CalibrateInfo" name="CalibrateInfo" />
+            <ui:Label text="StartPlay" name="StartPlay" />
+            <ui:Label text="RecordingInfo" name="RecordingInfo" style="-unity-text-align: upper-left;" />
+            <ui:Label text="ClearInfo" name="ClearInfo" style="-unity-text-align: upper-left;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
